@@ -3,7 +3,7 @@ import 'dart:convert';
 class Details {
   int?  id;
   String? title;
-  int? price;
+  num? price;
   String? description;
   String? category;
   String? image;
@@ -49,7 +49,7 @@ return data;
 }
 
 class Rating {
-  int? rate;
+  num? rate;
   int? count;
 
   Rating({
