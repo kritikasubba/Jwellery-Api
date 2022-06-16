@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
 import 'package:jwellery_api/provider/user_provider.dart';
+import 'package:jwellery_api/views/jwellery_details_page.dart';
 import 'package:jwellery_api/views/views.dart';
 import 'package:provider/provider.dart';
 
@@ -17,33 +16,91 @@ class _JwelleryApiState extends State<JwelleryApi> {
   @override
   void initState() {
     Future.microtask(() {
-      Provider.of<UserProvider>(context , listen: false).getDetails();
+      Provider.of<UserProvider>(context, listen: false).getDetails();
     });
     super.initState();
   }
+
   Widget build(BuildContext context) {
-    return  
-    
-    Scaffold(
+    return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Jwellery Shop'),
       ),
-      body : Consumer<UserProvider>(builder: (context, value, child){
-    return ListView.builder(
-      itemCount: jwelleryDetails.length,
-      itemBuilder: (context, index) {
-      return Column(
-      children: [
-        Image.network(jwelleryDetails[index].image ?? ""),
-      Text(jwelleryDetails[index].id.toString()),
-      Text(jwelleryDetails[index].price.toString()),
-      ],
-      );
-    });
-    
-      } ),
+      body: Consumer<UserProvider>(builder: (context, value, child) {
+        return ListView.builder(
+            itemCount: jwelleryDetails.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+                  int? newId;
+                  String? newTitle;
+                  String? newDescription;
+
+                  setState(() {
+                    newId = jwelleryDetails[index].id;
+                    newTitle = jwelleryDetails[index].title;
+                    newDescription = jwelleryDetails[index].description;
+
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return JwelleryDetailsPage(
+                          description: newDescription,
+                          id: newId,
+                          title: newTitle);
+                    }));
+                  });
+                },
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                  child: Card(
+                    shadowColor: Colors.red,
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 170,
+                          width: 250,
+                          margin: const EdgeInsets.symmetric(vertical: 15),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Colors.red.shade100, width: 2),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(32)),
+                          ),
+                          child: ClipRRect(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(32)),
+                              child: Padding(
+                                padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                child: Column(
+                                  
+                                  children: [
+                                    Image.network(
+                                      jwelleryDetails[index].image ?? "",
+                                      height: 100,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                            "Price: ${jwelleryDetails[index].price.toString()}"),
+                                        Text(
+                                            "Rating: ${jwelleryDetails[index].rating.toString()}"),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              )),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            });
+      }),
     );
-    
   }
 }
